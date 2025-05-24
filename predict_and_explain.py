@@ -14,7 +14,6 @@ model = bundle["model"]
 label_encoder = bundle["label_encoder"]
 features = bundle["features"]
 
-# Friendly feature names
 friendly_names = {
     "N": "Nitrogen", "P": "Phosphorus", "K": "Potassium",
     "temperature": "Temperature", "humidity": "Humidity",
@@ -23,29 +22,23 @@ friendly_names = {
 modifiable_features = {"N", "P", "K", "ph"}
 
 def generate_crop_recommendation(input_data, save_dir="results"):
-    # Clear old results
     if os.path.exists(save_dir):
         shutil.rmtree(save_dir)
     os.makedirs(save_dir, exist_ok=True)
 
-    # Fill missing features with np.nan for consistent model input
     for f in features:
         if f not in input_data:
             input_data[f] = np.nan
 
-    # Create input DataFrame and fix data types
     X_input = pd.DataFrame([input_data])[features]
     X_input = X_input.astype(float)
 
-    # Get top predictions
     probs = model.predict_proba(X_input)[0]
     top_indices = probs.argsort()[-3:][::-1]
 
-    # SHAP explanation
     explainer = shap.Explainer(model)
     shap_values = explainer(X_input)
 
-    # Ideal feature values
     df = pd.read_csv(db_path)
 
     predictions = []
@@ -57,7 +50,6 @@ def generate_crop_recommendation(input_data, save_dir="results"):
         shap_vals = shap_values.values[0, :, idx]
         base_val = shap_values.base_values[0, idx]
 
-        # SHAP plot saving
         image_filename = f"{crop.lower().replace(' ', '_')}.png"
         image_path = os.path.join(save_dir, image_filename)
         explanation = shap.Explanation(
@@ -71,7 +63,6 @@ def generate_crop_recommendation(input_data, save_dir="results"):
         plt.savefig(image_path)
         plt.close()
 
-        # Supportive and hindering features
         top_pos = sorted([(f, shap_vals[i]) for i, f in enumerate(features) if shap_vals[i] > 0], key=lambda x: -x[1])[:2]
         top_neg = sorted([(f, shap_vals[i]) for i, f in enumerate(features) if shap_vals[i] < 0], key=lambda x: x[1])[:2]
 
@@ -82,7 +73,6 @@ def generate_crop_recommendation(input_data, save_dir="results"):
         bad_text = " and ".join(bad_features) if bad_features else "none"
 
         feature_means = df[df['label'] == crop][features].mean()
-        # Suggest improvements for modifiable features
         suggestions = []
         for f in modifiable_features:
             if not pd.isna(input_data[f]):
@@ -91,8 +81,7 @@ def generate_crop_recommendation(input_data, save_dir="results"):
                 direction = "increasing" if ideal > current else "decreasing"
                 suggestions.append(f"{direction} {friendly_names[f]} to {ideal:.1f}(Currently : {input_data[f]})")
 
-        # Report lines
-        crop_rank = f"{rank+1}) {crop} is suggested with a probability of {prob * 100:.2f}%."
+        crop_rank = f"{crop} is suggested with a probability of {prob * 100:.2f}%."
         reasons = f"The best factors supporting this are {good_text}."
         cautions = f"However, {bad_text} might hinder a good growth."
         recommendations = "For better results, consider :\n" + "\n".join(suggestions) + "."
@@ -108,7 +97,6 @@ def generate_crop_recommendation(input_data, save_dir="results"):
             "report": full_text
         })
 
-    # Append NOTE if there are missing values
     missing_feats = [f for f in features if pd.isna(input_data[f])]
     if missing_feats:
         missing_names = ", ".join(friendly_names[f] for f in missing_feats)
@@ -124,7 +112,7 @@ if __name__ == "__main__":
     import json
     import numpy as np
 
-    user_input = json.loads(sys.argv[1])  # from Node
+    user_input = json.loads(sys.argv[1])  
     result = generate_crop_recommendation(user_input)
 
     def clean_json(obj):
@@ -139,6 +127,6 @@ if __name__ == "__main__":
         else:
             return obj
 
-    print(json.dumps(clean_json(result)))  # prints one JSON string line
+    print(json.dumps(clean_json(result)))
     sys.stdout.flush()
     sys.stderr.flush()

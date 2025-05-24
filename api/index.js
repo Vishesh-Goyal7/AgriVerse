@@ -2,36 +2,34 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { spawn } = require("child_process");
 const path = require("path");
+const cors = require("cors");
 
 const app = express();
 const port = 3001;
 
+app.use(cors());
 app.use(bodyParser.json());
+app.use("/results", express.static(path.join(__dirname, "results")));
 
 app.post("/predict", (req, res) => {
   const userInput = JSON.stringify(req.body);
 
-  // Resolve absolute paths
   const scriptPath = path.resolve(__dirname, "../predict_and_explain.py");
   const pythonPath = path.resolve(__dirname, "../venv/bin/python");
 
-  // Spawn the Python process
   const py = spawn(pythonPath, [scriptPath, userInput]);
 
   let output = "";
   let error = "";
 
-  // Collect stdout
   py.stdout.on("data", (data) => {
     output += data.toString();
   });
 
-  // Collect stderr (errors or debug messages)
   py.stderr.on("data", (data) => {
     error += data.toString();
   });
 
-  // Handle process completion
   py.on("close", (code) => {
     if (code !== 0) {
       console.error("❌ Python script failed with exit code:", code);
@@ -50,7 +48,6 @@ app.post("/predict", (req, res) => {
   });
 });
 
-// Start server
 app.listen(port, () => {
   console.log(`✅ Crop Recommendation API running at http://localhost:${port}`);
 });
