@@ -4,7 +4,7 @@ import joblib
 import pandas as pd
 import numpy as np
 
-bundle = joblib.load("xgboost_crop_bundle.pkl")
+bundle = joblib.load("xgboost_crop_dropout_trained.pkl")
 model = bundle["model"]
 label_encoder = bundle["label_encoder"]
 features = bundle["features"]
