@@ -1,6 +1,3 @@
 /venv/
-/Data/
-xgboost_crop_bundle.pkl
-xgboost_crop_dropout_trained.pkl
 /api/node_modules
 /api/results/*
