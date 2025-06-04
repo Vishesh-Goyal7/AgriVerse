@@ -21,10 +21,37 @@ friendly_names = {
 }
 modifiable_features = {"N", "P", "K", "ph"}
 
+def generate_global_feature_importance(save_path="results/global_importance.png"):
+    df = pd.read_csv("../Data/Crop_recommendation.csv")
+    X = df[features]
+
+    explainer = shap.Explainer(model)
+    shap_values = explainer(X)
+
+    if len(shap_values.shape) == 3:
+        mean_importance = np.mean(np.abs(shap_values.values), axis=(0, 2))
+    else:
+        mean_importance = np.mean(np.abs(shap_values.values), axis=0)
+
+    sorted_indices = np.argsort(mean_importance)[::-1]
+    sorted_features = [features[i] for i in sorted_indices]
+    sorted_importance = mean_importance[sorted_indices]
+
+    plt.figure(figsize=(8, 5))
+    plt.barh(sorted_features[::-1], sorted_importance[::-1], color="#6BA368")
+    plt.xlabel("Mean |SHAP value| (avg impact on model output)")
+    plt.xticks([])
+    plt.title("Global Feature Importance")
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.close()
+
 def generate_crop_recommendation(input_data, save_dir="results"):
     if os.path.exists(save_dir):
         shutil.rmtree(save_dir)
     os.makedirs(save_dir, exist_ok=True)
+
+    generate_global_feature_importance()
 
     for f in features:
         if f not in input_data:
@@ -35,6 +62,18 @@ def generate_crop_recommendation(input_data, save_dir="results"):
 
     probs = model.predict_proba(X_input)[0]
     top_indices = probs.argsort()[-3:][::-1]
+
+    # Calculate trust score
+    prob_top_1 = probs[top_indices[0]]
+    prob_top_2 = probs[top_indices[1]]
+    confidence_margin = round(float(prob_top_1 - prob_top_2), 4)
+
+    if confidence_margin >= 0.5:
+        trust_level = "High"
+    elif confidence_margin >= 0.25:
+        trust_level = "Medium"
+    else:
+        trust_level = "Low"
 
     explainer = shap.Explainer(model)
     shap_values = explainer(X_input)
@@ -49,6 +88,15 @@ def generate_crop_recommendation(input_data, save_dir="results"):
         prob = round(probs[idx], 4)
         shap_vals = shap_values.values[0, :, idx]
         base_val = shap_values.base_values[0, idx]
+
+        feature_impact = []
+        for i, f in enumerate(features):
+            impact = {
+                "feature": friendly_names[f],
+                "value": input_data[f] if not pd.isna(input_data[f]) else None,
+                "shap": round(float(shap_vals[i]), 5)
+            }
+            feature_impact.append(impact)
 
         image_filename = f"{crop.lower().replace(' ', '_')}.png"
         image_path = os.path.join(save_dir, image_filename)
@@ -94,7 +142,8 @@ def generate_crop_recommendation(input_data, save_dir="results"):
             "crop": crop,
             "probability": prob,
             "image_path": image_path,
-            "report": full_text
+            "report": full_text,
+            "feature_impact": feature_impact
         })
 
     missing_feats = [f for f in features if pd.isna(input_data[f])]
@@ -104,7 +153,12 @@ def generate_crop_recommendation(input_data, save_dir="results"):
 
     return {
         "top_predictions": predictions,
-        "full_report": "\n\n".join(report_lines)
+        "full_report": "\n\n".join(report_lines),
+        "global_importance_path": "results/global_importance.png",
+        "trust_score": {
+            "level": trust_level,
+            "confidence": confidence_margin
+        }
     }
 
 if __name__ == "__main__":
