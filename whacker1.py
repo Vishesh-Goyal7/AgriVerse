@@ -8,13 +8,13 @@ label_encoder = bundle["label_encoder"]
 features = bundle["features"]
 
 input_data = {
-    'N': 90,
-    'P': 42,
-    'K': 43,
-    'temperature': 22.0,
-    'humidity': 80.0,
-    'ph': 6.5,
-    'rainfall': 200.0
+    "N": 90,
+    "P": 42,
+    "K": 43,
+    "temperature": 22.0,
+    "humidity": 80.0,
+    "ph": 6.5,
+    "rainfall": 200.0
 }
 
 X_input = pd.DataFrame([input_data])[features]
