@@ -10,6 +10,7 @@ const port = 3001;
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/results", express.static(path.join(__dirname, "results")));
+app.use("/crop_images", express.static(path.resolve(__dirname, "crop_images")));
 
 app.post("/predict", (req, res) => {
   const userInput = JSON.stringify(req.body);
