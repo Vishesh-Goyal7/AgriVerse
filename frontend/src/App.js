@@ -205,7 +205,7 @@ function App() {
       <div className="global-importance">
         <h3>🌍 Global Feature Importance</h3>
         <img
-          src="http://localhost:3001/results/global_importance.png"
+          src="http://localhost:3001/crop_images/global_importance.png"
           alt="Global Feature Importance"
           className="global-image"
         />
