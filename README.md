@@ -1,10 +1,14 @@
 Hello, this is a crop recommendation system with completely functional UI and backend that exploits SHAP to make a smart crop recommendation system. 
 
 Steps to run the project : 
-1) Create a suitable python virtual environment and download the necessary requirements as mentioned in requirements.txt
-2) Run the brainIt2.py on the descripted data. This is essential to make the prediction model. Or you can simply go with my created model as well. 
-3) Then, launch the npm backend using 'nodemon index.js' to run the model in a temporary python shell. 
-4) Use the 'npm start' command, launch the UI on react local host. 
+1) Create a python3.10 virtual environment by the name of 'venv' such that the first parent directory of Data, api and frontend folder is exactly the same.
+2) Activate the venv and upgrade your pip in the virtual environment.
+3) With the virtual environment activated, hit 'pip install -r requirements.txt' to download the components of the virtual environment.
+4) Go to api folder in terminal and hit 'npm i' to download the node modules. Make sure that you have node installed in your system.
+5) Similarly, go to frontend folder and hit 'npm i' to download the node modules. Make sure that you have react installed in your system.
+6) Run the brainIt2.py on the descripted data in the Data folder. This is essential to make the prediction model. Or you can simply go with my created model as well. You can use your own dataset for training the model or my dataset works just fine as well. 
+7) Then, go to api folder via terminal and launch the npm backend using 'node index.js' to run the model in a temporary python shell and connect it as a backend server. 
+8) Using the 'npm start' command in frontend folder, launch the UI on react local host. 
 
 File description in the order of their creation : 
 
