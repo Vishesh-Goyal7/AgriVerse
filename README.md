@@ -30,12 +30,9 @@ File description in the order of their creation :
 
 9) frontend/src/App.js : This file is the main frontend of the project that takes the data from the user, preprocesses it and sends to back end for getting results. In case the user doesn't enter an input, it is considered that the value for that is unknown and the result is made on that basis. 
 
-Please refer to the testing videos for seeing the results or to get a guide on the use of the model. 
+Please refer to the testing videos for seeing the results and to get a guide on the use of the model in the guide directory on this repository. 
 
 Scope of improvement : A weather API can be used to estimate the rainfall, humidity and temperature by asking the user's region instead of asking it from the user. 
-
-
-
 
 
 This project is the sole property, creation and realisation of Vishesh Goyal, that is me. 
