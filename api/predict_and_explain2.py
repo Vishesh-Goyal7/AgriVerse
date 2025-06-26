@@ -22,7 +22,7 @@ friendly_names = {
 modifiable_features = {"N", "P", "K", "ph"}
 
 def generate_global_feature_importance(save_path="results/global_importance.png"):
-    df = pd.read_csv("../Data/Crop_recommendation.csv")
+    df = pd.read_csv("Data/Crop_recommendation.csv")
     X = df[features]
 
     explainer = shap.Explainer(model)
@@ -47,7 +47,7 @@ def generate_global_feature_importance(save_path="results/global_importance.png"
     plt.close()
 
 
-def calculate_crop_ideals(csv_path="../Data/Crop_recommendation.csv"):
+def calculate_crop_ideals(csv_path="Data/Crop_recommendation.csv"):
     df = pd.read_csv(csv_path)
     return df.groupby("label")[features].mean().to_dict(orient="index")
 
