@@ -40,7 +40,7 @@ function App() {
     });
 
     try {
-      const response = await fetch("http://localhost:3001/predict", {
+      const response = await fetch("https://agriverse-zfvd.onrender.com/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(inputObj),
@@ -146,7 +146,7 @@ function App() {
         {predictions.map(pred => (
           <div key={pred.crop} className="crop-result">
             <img
-              src={`http://localhost:3001/crop_images/${pred.crop.toLowerCase()}.jpeg`}
+              src={`https://agriverse-zfvd.onrender.com/crop_images/${pred.crop.toLowerCase()}.jpeg`}
               alt={pred.crop}
               className="crop-image"
               onClick={() => setActiveCrop(pred)}
@@ -205,7 +205,7 @@ function App() {
       <div className="global-importance">
         <h3>🌍 Global Feature Importance</h3>
         <img
-          src="http://localhost:3001/crop_images/global_importance.png"
+          src="https://agriverse-zfvd.onrender.com/crop_images/global_importance.png"
           alt="Global Feature Importance"
           className="global-image"
         />
