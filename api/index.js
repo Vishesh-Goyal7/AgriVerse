@@ -16,7 +16,7 @@ app.post("/predict", (req, res) => {
   const userInput = JSON.stringify(req.body);
 
   const scriptPath = path.resolve(__dirname, "predict_and_explain2.py");
-  const pythonPath = path.resolve(__dirname, "venv/bin/python");
+  const pythonPath = "python3";
 
   const py = spawn(pythonPath, [scriptPath, userInput]);
 
