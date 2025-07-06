@@ -49,6 +49,6 @@ app.post("/predict", (req, res) => {
   });
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`✅ Crop Recommendation API running at http://localhost:${port}`);
 });
