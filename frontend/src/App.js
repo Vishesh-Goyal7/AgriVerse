@@ -40,7 +40,7 @@ function App() {
     });
 
     try {
-      const response = await fetch("http://13.200.235.49:3001/predict", {
+      const response = await fetch("http://localhost:3001/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(inputObj),
