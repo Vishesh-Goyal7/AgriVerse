@@ -1,39 +1,84 @@
-Hello, this is a crop recommendation system with completely functional UI and backend that exploits SHAP to make a smart crop recommendation system. 
+<p align='center'><img src='https://portfolioimagesvishesh.s3.ap-south-1.amazonaws.com/agriverse.jpg' height=150px width=auto></p>
 
-Steps to run the project : 
-1) Create a python3.10 virtual environment by the name of 'venv' such that the first parent directory of Data, api and frontend folder is exactly the same.
-2) Activate the venv and upgrade your pip in the virtual environment.
-3) With the virtual environment activated, hit 'pip install -r requirements.txt' to download the components of the virtual environment.
-4) Go to api folder in terminal and hit 'npm i' to download the node modules. Make sure that you have node installed in your system.
-5) Similarly, go to frontend folder and hit 'npm i' to download the node modules. Make sure that you have react installed in your system.
-6) Run the brainIt2.py on the descripted data in the Data folder. This is essential to make the prediction model. Or you can simply go with my created model as well. You can use your own dataset for training the model or my dataset works just fine as well. 
-7) Then, go to api folder via terminal and launch the npm backend using 'node index.js' to run the model in a temporary python shell and connect it as a backend server. 
-8) Using the 'npm start' command in frontend folder, launch the UI on react local host. 
+# AgriVerse
 
-File description in the order of their creation : 
+## 📝 Brief Overview 
+AgriVerse is a smart crop recommendation system that provides users with insights on which is the most suitable crop to be grown in an area based on the area's physical conditions like nutrient content and weather conditions. It is fast, robust and a great tool to assist farmers pan India to grow their crops better. Moreover, it provides trust scores for its recommendation and also gives alternatives. The system is also smart enough to guide the farmers on adjusting the nutrient content to help them grow the crops the best way possible. 
 
-1) /Data/Crop_recommendation.csv : Kaggle fetched dataset that suggests crops out of 22 different crops using 7 parameters(N, P, K content, pH, humidity, rainfall, temperature)
+---
 
-2) brainIt1.py : This makes a model that uses all the above mentioned parameters to predict the results. Cause of rejection : Uses all the parameters. In a real world scenario, a farmer might not be aware of certain factors. Name is brainIt1.py since it is the first iteration of the main brain of the model. 
+## 📸 Screenshots of Web Demo
+<p align='center'><img height=700px width=auto src='./Guide/Step6 - Input on the frontend.png'><br><em>Fig : Taking input on the frontend dynamically</em></p><br><br>
+<p align='center'><img height=700px width=auto src='./Guide/Step7 - Output1.png'><br><em>Fig : Top 3 crop recommendations, trust score and alternative crop suggestion</em></p><br><br>
+<p align='center'><img height=700px width=auto src='./Guide/Step7 - Output3.png'><br><em>Fig : Per Crop Modal that gives a description and how each feature is contributing</em></p><br><br>
+<p align='center'><img height=700px width=auto src='./Guide/Step7 - Output2.png'><br><em>Fig : Global Feature importance telling how does each feature affect the model</em></p><br><br>
 
-3) brainIt2.py : This was an improvement on the previous version of the model that helped to randomly remove a few labels and then train the model. 
+---
 
-4) whacker1.py : This was a test to load the model, input a few parameters and run the model. 
+## 📚Tech Stack
 
-5) whacker2.py : This was a sensitivity analysis which selects 1000 random inputs(equally taken from each class) and removes 2 features randomly from each row to analyse which factor is most crucial for a good result. After about 15 tests, rainfall and humidity values are the most critical ones. 
+<p align='center'>
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" height=1200px width=auto>
+<img src="https://img.shields.io/badge/Node.js-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" height=120px width=auto>
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" height=120px width=auto>
+<img src="https://img.shields.io/badge/SciKitLearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white" height=120px width=auto>  
+</p>
 
-6) shapExplainer.py : Testing for SHAP explainability so that I can verify the effectiveness of the model and the explainability part of it as well. 
+---
 
-7) predict_and_explainpy : The final model that uses the model brain to predict results, make waterfall graphs using SHAP and make a comprehensive report about the prediction. 
+## 🖥️ Local Setup
 
-8) api/index.js : This file is the API call handler for the back end. It takes the user input and spawns a python thread to run the model, make and store explainability graphs in api/results folder and send the data back to front end. 
+#### 🔧 Prerequisites
+Python v3.10
+NodeJS v22.0+
 
-9) frontend/src/App.js : This file is the main frontend of the project that takes the data from the user, preprocesses it and sends to back end for getting results. In case the user doesn't enter an input, it is considered that the value for that is unknown and the result is made on that basis. 
+## 💻 Setup
 
-Please refer to the testing videos for seeing the results and to get a guide on the use of the model in the guide directory on this repository. 
+#### Cloning
+```bash
+git clone https://github.com/Vishesh-Goyal7/AgriVerse
+cd AgriVerse
+```
 
-Scope of improvement : A weather API can be used to estimate the rainfall, humidity and temperature by asking the user's region instead of asking it from the user. 
+#### Backend 
+```bash
+python3.10 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+cd api
+npm install
+pip install -r requirements.txt
+node index.js
+```
 
+#### Frontend
+```bash
+cd ../frontend
+npm i
+npm start
+```
 
-This project is the sole property, creation and realisation of Vishesh Goyal, that is me. 
-Any suggestions and changes are welcome at visheshvishu1@outlook.com or visheshvishu1@gmail.com. 
+---
+
+## 📃 License
+
+MIT License © 2025 VisheshVerse
+
+---
+
+## Live Demo 
+
+[Live Demo](https://agriverse.visheshverse.com)
+
+## 🙋‍♂️ Author
+
+This project represents days of engineering, experimentation, and perseverance. If SkillAI helped you, inspired you, or made you think — I’d love to hear from you.
+
+Feel free to ⭐ the repo or connect with me at visheshvishu1@outlook.com
+
+Stay curious.
+
+**Vishesh Goyal**  
+[GitHub](https://github.com/Vishesh-Goyal7) | [LinkedIn](https://linkedin.com/in/vishesh-goyal-2k5) | [Personal Portfolio](https://visheshverse.com)
+
+---
