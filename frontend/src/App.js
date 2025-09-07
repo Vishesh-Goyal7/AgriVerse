@@ -3,7 +3,7 @@ import Chart from "chart.js/auto";
 import "./App.css";
 
 const allFeatures = [
-  "N", "P", "K", "Temperature", "Humidity", "pH", "Rainfall"
+  "N", "P", "K", "pH"
 ];
 
 function App() {
@@ -12,9 +12,26 @@ function App() {
   const [predictions, setPredictions] = useState([]);
   const [responseData, setResponseData] = useState(null);
   const [activeCrop, setActiveCrop] = useState(null);
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
 
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+        },
+        () => {
+          setLocationPermissionDenied(true);
+        }
+      );
+    } else {
+      setLocationPermissionDenied(true);
+    }
+  }, []);
 
   const handleAddRow = () => {
     setRows([...rows, { feature: "", value: "" }]);
@@ -38,8 +55,15 @@ function App() {
     rows.forEach(row => {
       if (row.feature) inputObj[row.feature] = row.value ? parseFloat(row.value) : null;
     });
+    if (location.latitude && location.longitude) {
+      inputObj.location = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      };
+    }
 
     try {
+      console.log(inputObj);
       const response = await fetch(`https://agriverseapi.visheshverse.com/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -135,6 +159,29 @@ function App() {
             ))}
           </tbody>
         </table>
+
+        {locationPermissionDenied && (
+          <div className="manual-location">
+            <label>
+              Latitude:
+              <input
+                type="number"
+                step="any"
+                value={location.latitude || ""}
+                onChange={(e) => setLocation({ ...location, latitude: parseFloat(e.target.value) })}
+              />
+            </label>
+            <label>
+              Longitude:
+              <input
+                type="number"
+                step="any"
+                value={location.longitude || ""}
+                onChange={(e) => setLocation({ ...location, longitude: parseFloat(e.target.value) })}
+              />
+            </label>
+          </div>
+        )}
 
         <div className="button-group">
           <button onClick={handleAddRow}>Add Condition</button>
