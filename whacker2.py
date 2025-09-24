@@ -1,7 +1,12 @@
 import pandas as pd
 import joblib
-import random
-from collections import Counter
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix
+)
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 bundle = joblib.load("xgboost_crop_dropout_trained.pkl")
 model = bundle["model"]
@@ -10,40 +15,29 @@ all_features = bundle["features"]
 
 df = pd.read_csv("Data/Crop_recommendation.csv")
 num_samples = 1000
-samples = df.sample(n=num_samples, random_state=1)
+df = df.sample(n=num_samples, random_state=5)
+X = df[all_features]
+y_true = df["label"]
+y_true_encoded = label_encoder.transform(y_true)
 
-correct = 0
-missing_feature_counter = Counter()
-skewed_feature_counter = Counter()
+y_pred_encoded = model.predict(X)
 
-for idx, row in samples.iterrows():
-    input_features = row[all_features].copy()
-    true_label = row["label"]
+y_pred = label_encoder.inverse_transform(y_pred_encoded)
 
-    removed_features = random.sample(all_features, 2)
-    for feat in removed_features:
-        missing_feature_counter[feat] += 1
-        input_features[feat] = float('nan')
+print("🔍 Overall Evaluation Metrics:\n")
+print(f"✅ Accuracy: {accuracy_score(y_true_encoded, y_pred_encoded):.4f}\n")
+print(classification_report(y_true_encoded, y_pred_encoded, target_names=label_encoder.classes_))
 
-    X_input = pd.DataFrame([input_features])[all_features]
-
-    pred_encoded = model.predict(X_input)[0]
-    pred_label = label_encoder.inverse_transform([pred_encoded])[0]
-
-    if pred_label == true_label:
-        correct += 1
-    else:
-        for feat in removed_features:
-            skewed_feature_counter[feat] += 1
-
-    print(f"True: {true_label:15} | Predicted: {pred_label:15} | Missing: {removed_features}")
-
-print(f"\nAccuracy on {num_samples} samples with 2 missing features each: {correct}/{num_samples} = {correct/num_samples:.2%}")
-
-print("\n🔍 Feature Sensitivity Analysis (Skew Rate per Missing Feature):")
-for feature in all_features:
-    total_missing = missing_feature_counter[feature]
-    total_skewed = skewed_feature_counter[feature]
-    if total_missing > 0:
-        risk_ratio = (total_skewed / total_missing) * 100
-        print(f"Missing Feature: {feature:15} | Skewed: {total_skewed:2d} / {total_missing:2d} | Risk: {risk_ratio:.2f}%")
+cm = confusion_matrix(y_true_encoded, y_pred_encoded)
+plt.figure(figsize=(12, 10))
+sns.heatmap(cm, annot=True, fmt="d", cmap="YlGnBu",
+            xticklabels=label_encoder.classes_,
+            yticklabels=label_encoder.classes_)
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("📊 Confusion Matrix")
+plt.xticks(rotation=45, ha="right")
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.savefig("confusion_matrix.png")
+plt.show()
