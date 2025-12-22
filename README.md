@@ -18,7 +18,7 @@ AgriVerse is a smart crop recommendation system that provides users with insight
 ## 📚Tech Stack
 
 <p align='center'>
-<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" height=1200px width=auto>
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" height=120px width=auto>
 <img src="https://img.shields.io/badge/Node.js-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" height=120px width=auto>
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" height=120px width=auto>
 <img src="https://img.shields.io/badge/SciKitLearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white" height=120px width=auto>  
